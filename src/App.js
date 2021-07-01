@@ -1,25 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
+import HomePage from './containers/Home';
+import { connect } from 'react-redux';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
 
-function App() {
+function App({ categories }) {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ display: 'flex' }}>
+      <BrowserRouter>
+        <Sidebar />
+        <Switch>
+          <Route exact path='/' component={HomePage} />
+          {
+            categories.categories.map(category => <Route exact key={category.id} path={`/${category.name}`} render={() => <HomePage category={category.id} />} />)
+          }
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  categories: state.categories,
+});
+
+
+export default  connect(mapStateToProps, null)(App);
